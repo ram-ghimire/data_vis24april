@@ -123,7 +123,7 @@ ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) +
 #Pick up countries that starts with "A"
 a_countries <- filter(gapminder,str_starts(country,"A"))
 
-#produce separate output plot with facet_wrap argument
+#produce separate output plots with facet_wrap argument
 ggplot(data = a_countries,aes(x=year,y=lifeExp,colour=continent))+
   geom_line()+
   facet_wrap(~country)
@@ -142,11 +142,101 @@ gapminder_plot <- ggplot(data = gapminder, aes(x = pop, fill=continent)) +
 
 ggsave(filename = "results/density_plot.png", plot = gapminder_plot, width = 12, height = 10, dpi = 300, units = "cm")
 
+#Creating rough plot
+rough_plot <- ggplot(data=a_countries,aes(x=year,y=lifeExp,colour=continent))+
+  geom_line()+
+  facet_wrap(~country)
 
+# we have stored the plot above into a variable named rough_plot. 
+#We can continue adding layers to this variable and they will be applied to the plot as usual. 
 
+rough_plot +
+  labs(
+    title = "Figure 1", #main title of figure
+    x="Year", #x-axis title
+    y="Life Expectancy", #y-axis title
+    colour="continent" #title of legend
+  )
 
+#Adding meaning title and caption to the above plot
+rough_plot +
+  labs(
+    title = "Growth in life expectancy for 'A' countries",
+    caption = "Data source: Gapminder",
+    x = "Year",              
+    y = "Life Expectancy",  
+    color = "Continent"      
+  ) 
 
+#The previous ploy was applied with default theme of theme_grey
 
+rough_plot +
+  labs(
+    title = "Growth in life expectancy for 'A' countries",
+    caption = "Data source: Gapminder",
+    x = "Year",              
+    y = "Life Expectancy",  
+    color = "Continent"      
+  ) +
+  theme_bw()
+
+#We can modify individual elements of the theme of the plot using 
+#the theme() function
+
+rough_plot +
+  labs(
+    title = "Growth in life expectancy for 'A' countries",
+    caption = "Data source: Gapminder",
+    x = "Year",              
+    y = "Life Expectancy",  
+    color = "Continent"      
+  ) +
+  theme_bw()+
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+#Challenge 2
+
+lifeExp_plot <- rough_plot +
+  labs(
+    title = "Growth in life expectancy for 'A' countries",
+        x = "Year",              
+    y = "Life Expectancy",  
+    color = "Continent"      
+  ) +
+  theme_bw()+
+  theme(
+    strip.background = element_blank(),
+    panel.grid.major = element_line(size = 1),
+    axis.title = element_text(size = 10, colour = "blue"),
+    legend.position = "bottom",
+  )
+ggsave(filename = "results/lifeExp.png",plot = lifeExp_plot,width = 12,height = 10,dpi = 300,units = "cm")
+
+#the above function saved the plot as as a file name of "lifeExp.png"
+
+#Sometimes, one plot cannot tell the whole story and you need to combine
+#multiple plots into a single figure. There are several ways you can perform this, 
+#it can be done using the cowplot package
+
+install.packages("cowplot")
+library(cowplot)
+
+#The plot_grid() function from cowplot allows to combine multiple ggplot objects into a single figure. 
+#Save each individual plot into a variable and provide them all as arguments to plot_grid()
+
+plot1 <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp)) + geom_point()
+plot2 <- ggplot(gapminder, aes(x = continent, y = lifeExp)) + geom_boxplot()
+plot3 <- ggplot(gapminder, aes(x = gdpPercap, y = pop)) + geom_point()
+plot4 <- ggplot(gapminder, aes(x = lifeExp, y = pop)) + geom_point()
+
+# Combining them into one
+plot_grid(plot1, plot2, plot3, plot4)
+
+plot_grid(plot1, plot2, plot3, plot4, rel_heights = c(1, 3))
+
+plot_grid(plot1, plot2, plot3, plot4, labels = "AUTO")# labels figures as "A","B","C","D" in uppercase.
 
 
 
