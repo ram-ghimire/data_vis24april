@@ -135,13 +135,13 @@ ggplot(data = gapminder,aes(x=gdpPercap,y=lifeExp, colour=continent,size=pop))+
   facet_wrap(~year)
 
 #Challenge 13, creating density plot with continent fill 
-ggplot(data = gapminder, aes(x = pop, fill=continent)) +
+gapminder_plot <- ggplot(data = gapminder, aes(x = pop, fill=continent)) +
   geom_density(alpha=0.4) + 
   facet_wrap( ~ year) + 
   scale_x_log10()
 
+ggsave(filename = "results/density_plot.png", plot = gapminder_plot, width = 12, height = 10, dpi = 300, units = "cm")
 
-  
 
 
 
